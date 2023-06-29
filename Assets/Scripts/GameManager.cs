@@ -29,7 +29,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     
-    public static Stage stage = Stage.Stage2;
+    public static Stage stage = Stage.Stage1;
     
     
     private void Start()

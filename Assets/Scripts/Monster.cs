@@ -23,12 +23,13 @@ public class Monster : MonoBehaviour, IHit
 
     private bool hit = false;
     private bool landing = false;
-    private int nextMove = 0;
+    private bool patternCountA;
+    private bool patternCountM;
     [SerializeField] private int bossHealth = 1000;
     [SerializeField] private Slider hpSlider;
 
     private WaitForSeconds patternDelay = new WaitForSeconds(2.5f);
-    private WaitForSeconds attackDelay = new WaitForSeconds(2f);
+    private WaitForSeconds attackDelay = new WaitForSeconds(3f);
     private WaitForSeconds attackDelayEx = new WaitForSeconds(0.25f);
     private WaitForSeconds damageDelay = new WaitForSeconds(0.08f);
     private WaitForSeconds magicStartDelay = new WaitForSeconds(1f);
@@ -94,12 +95,28 @@ public class Monster : MonoBehaviour, IHit
         yield return new WaitForSeconds(3f);
         while(GameManager.gameStart)
         {
-            int pattern = Random.Range(0, 5);
-            if (!attackAreaIn) pattern = 3;
+            int pattern = Random.Range(0, 2);
+            if (patternCountA && pattern == 0)
+            {
+                patternCountA = false;
+                if(!patternCountM)
+                {
+                    pattern = Random.Range(0f, 1f) > 0.3f ? 1 : 0;
+                }
+            }
+            else if (patternCountM && pattern == 1)
+            {
+                patternCountM = false;
+                if(!patternCountA)
+                {
+                    pattern = Random.Range(0f, 1f) > 0.3f ? 0 : 1;
+                }
+            }
+            if (!attackAreaIn) pattern = 1;
             switch (pattern)
             { 
                 case 0:
-                case 1:
+                    patternCountA = true;
                     AttackWarnig();
                     yield return attackDelay;
                     anim.SetTrigger("Attack");
@@ -110,7 +127,8 @@ public class Monster : MonoBehaviour, IHit
                     attacking = false;
                     if (phase) yield return patternDelay;
                     break;
-                default:
+                case 1:
+                    patternCountM = true;
                     attacking = true;
                     anim.SetTrigger("Cast");
                     yield return magicStartDelay;
