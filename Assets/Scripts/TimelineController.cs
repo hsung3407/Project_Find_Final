@@ -8,14 +8,14 @@ using UnityEngine.Playables;
 
 public class TimelineController : MonoBehaviour
 {
-    public static TimelineController Instance;
-    [SerializeField] private PlayableDirector[] stageIntro; 
-    [SerializeField] private PlayableDirector stageEnd;
-    [SerializeField] private PlayableDirector bossCutScene; 
-    [SerializeField] private PlayableDirector bossDeadScene;
-    [SerializeField] private PlayableDirector endingScene;
-    [SerializeField] private PlayableDirector playerDead;
-    
+    public static            TimelineController Instance;
+    [SerializeField] private PlayableDirector[] stageIntro;
+    [SerializeField] private PlayableDirector   stageEnd;
+    [SerializeField] private PlayableDirector   bossCutScene;
+    [SerializeField] private PlayableDirector   bossDeadScene;
+    [SerializeField] private PlayableDirector   endingScene;
+    [SerializeField] private PlayableDirector   playerDead;
+
     private GameManager.Stage currentStage;
 
     private void Awake()
@@ -23,16 +23,16 @@ public class TimelineController : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+    public void Init()
     {
         currentStage = GameManager.stage;
         NextStage();
         StartCoroutine(StageChange());
     }
-    
+
     IEnumerator StageChange()
     {
-        while(true)
+        while (true)
         {
             yield return new WaitUntil(() => currentStage != GameManager.stage);
             currentStage = GameManager.stage;
@@ -42,6 +42,7 @@ public class TimelineController : MonoBehaviour
                 gameObject.SetActive(false);
                 yield break;
             }
+
             stageEnd.Play();
         }
     }
@@ -70,7 +71,7 @@ public class TimelineController : MonoBehaviour
                 break;
         }
     }
-    
+
 
     public void BossPhaseChange()
     {
@@ -82,5 +83,4 @@ public class TimelineController : MonoBehaviour
     {
         playerDead.Play();
     }
-
 }

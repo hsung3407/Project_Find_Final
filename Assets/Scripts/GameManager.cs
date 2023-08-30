@@ -7,37 +7,44 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
-
-
-
 public class GameManager : Singleton<GameManager>
 {
     public static bool gameStart;
 
-    [SerializeField] private Slider bossHealth;
-    [SerializeField] private Slider playerHealthBar;
-    [SerializeField] private Slider playerPotion;
-    private WaitForSeconds healthDel = new WaitForSeconds(0.003f);
-    [SerializeField] private GameObject potal;
+    [SerializeField] private Slider         bossHealth;
+    [SerializeField] private Slider         playerHealthBar;
+    [SerializeField] private Slider         playerPotion;
+    private                  WaitForSeconds healthDel = new WaitForSeconds(0.003f);
+    [SerializeField] private GameObject     potal;
 
     [SerializeField] private GameObject[] stageCam;
 
 
     public enum Stage
     {
-        Stage1, Stage2, Stage3, Stage4, BossStage, BossDead, Ending
+        Stage1,
+        Stage2,
+        Stage3,
+        Stage4,
+        BossStage,
+        BossDead,
+        Ending
     }
 
-    
+
     public static Stage stage = Stage.Stage1;
-    
-    
+
+
     private void Start()
     {
+        stage = Stage.Stage1;
+        TimelineController.Instance.Init();
         gameStart = false;
         bossHealth.gameObject.SetActive(false);
         playerHealthBar.gameObject.SetActive(false);
         playerPotion.gameObject.SetActive(false);
+        potal.SetActive(false);
+        potal.SetActive(true);
     }
 
     public void StageInit()
@@ -55,11 +62,12 @@ public class GameManager : Singleton<GameManager>
         playerHealthBar.gameObject.SetActive(true);
         playerPotion.gameObject.SetActive(true);
         potal.SetActive(true);
-        if(stage == Stage.BossStage)
+        if (stage == Stage.BossStage)
         {
             Monster.Instance.gameObject.SetActive(true);
             Monster.Instance.BattleStart();
         }
+
         MusicController.Instance.ChoiceMusic();
     }
 
@@ -74,23 +82,24 @@ public class GameManager : Singleton<GameManager>
         {
             stageCam[i].SetActive(false);
         }
+
         switch (stage)
         {
-           case Stage.Stage1:
-               stageCam[0].SetActive(true);
-               break;
-           case Stage.Stage2:
-               stageCam[1].SetActive(true);
-               break;
-           case Stage.Stage3:
-               stageCam[2].SetActive(true);
-               break;
-           case Stage.Stage4:
-               stageCam[3].SetActive(true);
-               break;
-           case Stage.BossStage:
-               stageCam[4].SetActive(true);
-               break;
+            case Stage.Stage1:
+                stageCam[0].SetActive(true);
+                break;
+            case Stage.Stage2:
+                stageCam[1].SetActive(true);
+                break;
+            case Stage.Stage3:
+                stageCam[2].SetActive(true);
+                break;
+            case Stage.Stage4:
+                stageCam[3].SetActive(true);
+                break;
+            case Stage.BossStage:
+                stageCam[4].SetActive(true);
+                break;
         }
     }
 
@@ -112,7 +121,8 @@ public class GameManager : Singleton<GameManager>
             bossHealth.value += 10f;
             yield return healthDel;
         }
-        gameStart = true;
+
+        gameStart        = true;
         bossHealth.value = 2000;
     }
 
@@ -120,7 +130,6 @@ public class GameManager : Singleton<GameManager>
     {
         SceneManager.LoadScene("End Title");
     }
-    
 
 
     public void PhaseInit()
